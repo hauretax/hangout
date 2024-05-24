@@ -44,5 +44,7 @@ public class MessageTicket {
 
     public Boolean isRead() {return read;}
 
+    public String getNumber() {return number;}
+
     public void setRead() {this.read = true;}
 }

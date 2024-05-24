@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="50dp"
+    android:gravity="center">
+
+    <ImageButton
+        android:id="@+id/buttonSelectPhoto"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="Sélectionner une photo"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_profile_picture"
+        android:background="@android:color/transparent"
+        android:onClick="onSelectPhotoButtonClick" />
+
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Label"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp" />
+
+    <com.example.fthangoutv03.CustomInput
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelText="Numero"
+        app:hintText="Entrez votre nom" />
+
+    <com.example.fthangoutv03.CustomInput
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelText="Nom"
+        app:hintText="Entrez votre nom" />
+
+    <com.example.fthangoutv03.CustomInput
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelText="Prenom"
+        app:hintText="Entrez votre email" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enregistrer"/>
+</LinearLayout>

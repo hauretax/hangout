@@ -15,7 +15,6 @@ import com.example.fthangoutv03.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MessageAdapter extends BaseAdapter {
 
@@ -63,8 +62,11 @@ public class MessageAdapter extends BaseAdapter {
             pseudoTextView.setTypeface(null, Typeface.NORMAL);
             messageTextView.setTypeface(null, Typeface.NORMAL);
         }
-
-        pseudoTextView.setText(currentItem.getName());
+        if (currentItem.getName().isEmpty()) {
+            pseudoTextView.setText(currentItem.getNumber());
+        } else {
+            pseudoTextView.setText(currentItem.getName());
+        }
         messageTextView.setText(currentItem.getMessage());
 
         ((TextView) view.findViewById(R.id.lastSend)).setText(formatDate(currentItem.getReceivedDate()));

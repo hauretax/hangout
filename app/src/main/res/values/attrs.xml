@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="CustomInput">
+        <attr name="labelText" format="string" />
+        <attr name="hintText" format="string" />
+    </declare-styleable>
+</resources>

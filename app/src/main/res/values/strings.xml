@@ -2,4 +2,8 @@
     <string name="app_name">ft hangout v0.3</string>
     <string name="blank">default</string>
     <string name="contact_picture">contact picture</string>
+    <string name="logo_desc">description de logo</string>
+    <string name="delete_conversation">supprimer la conversation</string>
+    <string name="create_contact">crée un contacte</string>
+    <string name="settings">paramétre</string>
 </resources>

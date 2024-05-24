@@ -3,13 +3,17 @@ package com.example.fthangoutv03;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.fthangoutv03.adapters.MessageAdapter;
 
@@ -20,10 +24,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private MessageAdapter adapter;
     private List<MessageTicket> messages;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
         //list of items
         messages = fetchAndSortMessages();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Optionally remove the default title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         ListView messageListView = findViewById(R.id.list_item);
         adapter = new MessageAdapter(this, messages);
@@ -48,6 +62,32 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
+
+        Intent intent;
+
+        if (id == R.id.create_contact) {
+            intent = new Intent(MainActivity.this, ContacteEditionActivity.class);
+        } else if (id == R.id.setting) {
+            intent = new Intent(MainActivity.this, SettingsActivity.class);
+        } else {
+            intent = new Intent(MainActivity.this, MainActivity.class);
+        }
+
+        startActivity(intent);
+        return true;
     }
 
     private List<MessageTicket> fetchAndSortMessages() {
