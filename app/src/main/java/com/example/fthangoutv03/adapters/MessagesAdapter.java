@@ -1,41 +1,44 @@
 package com.example.fthangoutv03.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.graphics.Color;
+import android.nfc.Tag;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.fthangoutv03.MessageTicket;
+import com.example.fthangoutv03.Message;
 import com.example.fthangoutv03.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class MessageAdapter extends BaseAdapter {
-
+public class MessagesAdapter extends BaseAdapter {
     private Context context;
-    private List<MessageTicket> messageTicketList;
+    private List<Message> messages;
     private LayoutInflater inflater;
 
-    public MessageAdapter(Context context, List<MessageTicket> messageTicketList) {
+    public MessagesAdapter(Context context, List<Message> messages) {
         this.context = context;
-        this.messageTicketList = messageTicketList;
+        this.messages = messages;
         this.inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return messageTicketList.size();
+        return messages.size();
     }
 
     @Override
-    public MessageTicket getItem(int position) {
-        return messageTicketList.get(position);
+    public Message getItem(int position) {
+        return messages.get(position);
     }
 
     @Override
@@ -46,35 +49,35 @@ public class MessageAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-
         if (view == null) {
-            view = inflater.inflate(R.layout.message_ticket, null);
+            view = inflater.inflate(R.layout.message, null);
         }
-        MessageTicket currentItem = getItem(i);
+        Message currentItem = getItem(i);
 
-        TextView pseudoTextView = view.findViewById(R.id.pseudo);
         TextView messageTextView = view.findViewById(R.id.message);
 
-        if (!currentItem.isRead()) {
-            pseudoTextView.setTypeface(null, Typeface.BOLD);
-            messageTextView.setTypeface(null, Typeface.BOLD);
-        } else {
-            pseudoTextView.setTypeface(null, Typeface.NORMAL);
-            messageTextView.setTypeface(null, Typeface.NORMAL);
-        }
-        if (currentItem.getName().isEmpty()) {
-            pseudoTextView.setText(currentItem.getNumber());
-        } else {
-            pseudoTextView.setText(currentItem.getName());
-        }
         messageTextView.setText(currentItem.getMessage());
 
-        ((TextView) view.findViewById(R.id.lastSend)).setText(formatDate(currentItem.getReceivedDate()));
-
-        ((ImageView) view.findViewById(R.id.profilePicture)).setImageResource(R.drawable.default_profile_picture);
-
+        messageTextView.setLayoutParams(setMessagesParams((LinearLayout.LayoutParams) messageTextView.getLayoutParams(),messageTextView, currentItem));
         return view;
     }
+
+    private LinearLayout.LayoutParams setMessagesParams(LinearLayout.LayoutParams params, TextView messageTextView, Message currentItem) {
+        if (currentItem.getSendTo().isEmpty()) {
+            params.gravity = Gravity.START;
+            messageTextView.setBackgroundColor(Color.LTGRAY); // Set background color for START
+
+            messageTextView.setPadding(16, 8, 16, 8); // left, top, right, bottom
+            Log.d("TAG", "Gravity set to START, Padding set to (16, 8, 16, 8)");
+        } else {
+            params.gravity = Gravity.END;
+            messageTextView.setBackgroundColor(Color.CYAN);
+            messageTextView.setPadding(16, 8, 16, 8); // left, top, right, bottom
+            Log.d("TAG", "Gravity set to END, Padding set to (16, 8, 16, 8)");
+        }
+        return params;
+    }
+
 
     private String formatDate(Date lastSend) {
         String formattedDate;
