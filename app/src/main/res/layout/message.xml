@@ -8,7 +8,6 @@
         android:id="@+id/messageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/inputLayout"
         android:orientation="horizontal">
 
         <TextView
@@ -22,27 +21,6 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/inputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
 
-        <EditText
-            android:id="@+id/inputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:hint="@string/enter_message_her" />
-
-        <Button
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:text="@string/send_message" />
-
-    </RelativeLayout>
 
 </RelativeLayout>
