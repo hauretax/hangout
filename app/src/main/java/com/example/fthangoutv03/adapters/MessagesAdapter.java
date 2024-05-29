@@ -47,7 +47,7 @@ public class MessagesAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -56,30 +56,39 @@ public class MessagesAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.message, null);
         }
         Message currentItem = getItem(i);
+
+        CardView cardView = view.findViewById(R.id.card_message);
         TextView messageTextView = view.findViewById(R.id.message);
+        ConstraintLayout constraintLayout = view.findViewById(R.id.constraintLayout);
+
         messageTextView.setText(currentItem.getMessage());
-        messageTextView.setLayoutParams(setMessagesParams((LinearLayout.LayoutParams) messageTextView.getLayoutParams(), messageTextView, currentItem, view));
+
+        adjustCardView(constraintLayout, cardView, messageTextView, currentItem);
+
         return view;
     }
 
-    private LinearLayout.LayoutParams setMessagesParams(LinearLayout.LayoutParams params, TextView messageTextView, Message currentItem, View view) {
-      //  CardView cardview = findViewById(R.id.parent_layout);
-       // ConstraintSet constraintSet = new ConstraintSet();
-        //constraintSet.clone(constraintSet);
+    private void adjustCardView(ConstraintLayout constraintLayout, CardView cardView, TextView messageTextView, Message currentItem) {
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraintLayout);
 
 
         if (currentItem.getSendTo().isEmpty()) {
-            messageTextView.setBackgroundColor(Color.LTGRAY); // Set background color for START
-
-            messageTextView.setPadding(16, 8, 16, 8); // left, top, right, bottom
+            messageTextView.setBackgroundColor(Color.LTGRAY);
+            constraintSet.connect(cardView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 8);
+            constraintSet.connect(cardView.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 16);
+            constraintSet.clear(cardView.getId(), ConstraintSet.END);
+            messageTextView.setPadding(16, 8, 16, 8);
             Log.d("TAG", "Gravity set to START, Padding set to (16, 8, 16, 8)");
         } else {
-            params.gravity = Gravity.END;
+            constraintSet.connect(cardView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 8);
+            constraintSet.connect(cardView.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 16);
+            constraintSet.clear(cardView.getId(), ConstraintSet.START);
             messageTextView.setBackgroundColor(Color.CYAN);
-            messageTextView.setPadding(16, 8, 16, 8); // left, top, right, bottom
+            messageTextView.setPadding(16, 8, 16, 8);
             Log.d("TAG", "Gravity set to END, Padding set to (16, 8, 16, 8)");
         }
-        return params;
+        constraintSet.applyTo(constraintLayout);
     }
 
 
