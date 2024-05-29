@@ -13,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+
 import com.example.fthangoutv03.Message;
 import com.example.fthangoutv03.R;
 
@@ -48,23 +52,23 @@ public class MessagesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-
         if (view == null) {
             view = inflater.inflate(R.layout.message, null);
         }
         Message currentItem = getItem(i);
-
         TextView messageTextView = view.findViewById(R.id.message);
-
         messageTextView.setText(currentItem.getMessage());
-
-        messageTextView.setLayoutParams(setMessagesParams((LinearLayout.LayoutParams) messageTextView.getLayoutParams(),messageTextView, currentItem));
+        messageTextView.setLayoutParams(setMessagesParams((LinearLayout.LayoutParams) messageTextView.getLayoutParams(), messageTextView, currentItem, view));
         return view;
     }
 
-    private LinearLayout.LayoutParams setMessagesParams(LinearLayout.LayoutParams params, TextView messageTextView, Message currentItem) {
+    private LinearLayout.LayoutParams setMessagesParams(LinearLayout.LayoutParams params, TextView messageTextView, Message currentItem, View view) {
+      //  CardView cardview = findViewById(R.id.parent_layout);
+       // ConstraintSet constraintSet = new ConstraintSet();
+        //constraintSet.clone(constraintSet);
+
+
         if (currentItem.getSendTo().isEmpty()) {
-            params.gravity = Gravity.START;
             messageTextView.setBackgroundColor(Color.LTGRAY); // Set background color for START
 
             messageTextView.setPadding(16, 8, 16, 8); // left, top, right, bottom
