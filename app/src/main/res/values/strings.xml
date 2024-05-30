@@ -8,4 +8,5 @@
     <string name="settings">paramétre</string>
     <string name="send_message">Envoyer</string>
     <string name="enter_message_her">Entrer votre message ici</string>
+    <string name="see_contact">voir les contactes</string>
 </resources>

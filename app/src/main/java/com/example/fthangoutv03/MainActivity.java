@@ -27,13 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
     private ContactMessageAdapter adapter;
     private List<MessageTicket> messages;
-
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
 
         if (id == R.id.create_contact) {
-            intent = new Intent(MainActivity.this, ContacteEditionActivity.class);
+            intent = new Intent(MainActivity.this, ContactEditionActivity.class);
         } else if (id == R.id.setting) {
             intent = new Intent(MainActivity.this, SettingsActivity.class);
+        } else if (id == R.id.see_contact) {
+            intent = new Intent(MainActivity.this, ContactsActivity.class);
         } else {
             intent = new Intent(MainActivity.this, MainActivity.class);
         }
