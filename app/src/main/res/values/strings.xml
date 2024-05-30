@@ -9,4 +9,11 @@
     <string name="send_message">Envoyer</string>
     <string name="enter_message_her">Entrer votre message ici</string>
     <string name="see_contact">voir les contactes</string>
+    <string name="rec">Enregistrer</string>
+    <string name="put_lastname">Entrez le prenom</string>
+    <string name="enter_firstname">Entrez le nom</string>
+    <string name="enter_phone">Entrez le numero</string>
+    <string name="phone">Numero</string>
+    <string name="firstname">Nom</string>
+    <string name="lastname">Prenom</string>
 </resources>

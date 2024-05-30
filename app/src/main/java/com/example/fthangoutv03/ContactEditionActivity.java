@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.activity.OnBackPressedCallback;
@@ -19,19 +20,35 @@ import java.io.InputStream;
 public class ContactEditionActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageButton imageButton;
+    private DataSource datasource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_edition);
 
+        datasource = new DataSource(this);
+        datasource.open();
         imageButton = findViewById(R.id.buttonSelectPhoto);
-
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openGallery();
             }
         });
+
+        Button recButton = findViewById(R.id.rec_button);
+        recButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomInput phone = findViewById(R.id.phone_input);
+                CustomInput firstName = findViewById(R.id.phone_input);
+                CustomInput lastName = findViewById(R.id.phone_input);
+                datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput());
+                finish();
+            }
+        });
+
 
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
         onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
@@ -61,6 +78,24 @@ public class ContactEditionActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        datasource.close();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        datasource.open();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        datasource.close();
+        super.onPause();
     }
 
 }

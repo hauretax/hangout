@@ -19,35 +19,30 @@
         android:background="@android:color/transparent"
         android:onClick="onSelectPhotoButtonClick" />
 
-
-    <TextView
-        android:id="@+id/label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Label"
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp" />
-
     <com.example.fthangoutv03.CustomInput
+        android:id="@+id/phone_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelText="Numero"
-        app:hintText="Entrez votre nom" />
+        app:labelText="@string/phone"
+        app:hintText="@string/enter_phone" />
 
     <com.example.fthangoutv03.CustomInput
+        android:id="@+id/firstname_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelText="Nom"
-        app:hintText="Entrez votre nom" />
+        app:labelText="@string/firstname"
+        app:hintText="@string/enter_firstname" />
 
     <com.example.fthangoutv03.CustomInput
+        android:id="@+id/lastname_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:labelText="Prenom"
-        app:hintText="Entrez votre email" />
+        app:labelText="@string/lastname"
+        app:hintText="@string/put_lastname" />
 
     <Button
+        android:id="@+id/rec_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enregistrer"/>
+        android:text="@string/rec"/>
 </LinearLayout>
