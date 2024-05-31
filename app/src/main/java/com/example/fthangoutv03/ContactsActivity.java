@@ -23,8 +23,8 @@ public class ContactsActivity extends AppCompatActivity {
 
         try {
             datasource = new DataSource(this);
-
             datasource.open();
+
             List<Contact> values = datasource.getAllContacts();
 
             ListView contactsView = findViewById(R.id.list_item);

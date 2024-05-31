@@ -6,8 +6,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +33,24 @@ public class DataSource {
         }
     }
 
-    public long addContact(String firstname, String lastname, String phone) {
+    private byte[] getBitmapAsByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+        return outputStream.toByteArray();
+    }
+
+    public long addContact(String firstname, String lastname, String phone, Bitmap image) {
         SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_CONTACT_FIRSTNAME, firstname);
         values.put(DatabaseHelper.COLUMN_CONTACT_LASTNAME, lastname);
         values.put(DatabaseHelper.COLUMN_CONTACT_PHONE, phone);
+
+        if (image != null) {
+            byte[] imageBytes = getBitmapAsByteArray(image);
+            values.put(DatabaseHelper.COLUMN_CONTACT_PICTURE, imageBytes);
+        }
+
         return db.insert(DatabaseHelper.TABLE_CONTACTS, null, values);
     }
 
@@ -76,10 +90,10 @@ public class DataSource {
     private Contact cursorToContact(Cursor cursor) {
         Contact contact = new Contact();
 
-        contact.setFirstName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTACT_PHONE)));
-        contact.setFirstName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTACT_FIRSTNAME)));
-        contact.setFirstName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTACT_LASTNAME)));
-
+        contact.setPhone(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTACT_PHONE)));
+        contact.setFirstname(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTACT_FIRSTNAME)));
+        contact.setLastname(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CONTACT_LASTNAME)));
+        contact.setPicture(cursor.getBlob(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_CONTACT_PICTURE)));
 
         return contact;
     }

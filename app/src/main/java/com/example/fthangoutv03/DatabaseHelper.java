@@ -6,13 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "messaging.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 6;
 
     //Contacts Table
     public static final String TABLE_CONTACTS = "contacts";
     public static final String COLUMN_CONTACT_FIRSTNAME = "firstname";
     public static final String COLUMN_CONTACT_LASTNAME = "secondname";
     public static final String COLUMN_CONTACT_PHONE = "phone";
+    public static final String COLUMN_CONTACT_PICTURE = "picture";
 
     //Messages Table
     public static final String TABLE_MESSAGES = "messages";
@@ -23,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_CONTACTS = "CREATE TABLE "
             + TABLE_CONTACTS + " ("
+            + COLUMN_CONTACT_PICTURE + " BLOB, "
             + COLUMN_CONTACT_FIRSTNAME + " TEXT, "
             + COLUMN_CONTACT_LASTNAME + " TEXT, "
             + COLUMN_CONTACT_PHONE + " TEXT PRIMARY KEY"
@@ -48,8 +50,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
-        onCreate(db);
+        if (oldVersion < newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
+            onCreate(db);
+        }
     }
 }

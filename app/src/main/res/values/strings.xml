@@ -16,4 +16,6 @@
     <string name="phone">Numero</string>
     <string name="firstname">Nom</string>
     <string name="lastname">Prenom</string>
+    <string name="select_pictur">Sélectionner une photo</string>
+    <string name="select_picture">photo selectionner</string>
 </resources>

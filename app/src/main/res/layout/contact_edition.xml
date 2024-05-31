@@ -13,7 +13,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="Sélectionner une photo"
+        android:contentDescription="@string/select_picture"
         android:scaleType="centerCrop"
         android:src="@drawable/default_profile_picture"
         android:background="@android:color/transparent"

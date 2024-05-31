@@ -20,6 +20,7 @@ import java.io.InputStream;
 public class ContactEditionActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageButton imageButton;
+    private Bitmap selectedImage;
     private DataSource datasource;
 
     @Override
@@ -42,9 +43,9 @@ public class ContactEditionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CustomInput phone = findViewById(R.id.phone_input);
-                CustomInput firstName = findViewById(R.id.phone_input);
-                CustomInput lastName = findViewById(R.id.phone_input);
-                datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput());
+                CustomInput firstName = findViewById(R.id.firstname_input);
+                CustomInput lastName = findViewById(R.id.lastname_input);
+                datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
                 finish();
             }
         });
@@ -72,7 +73,7 @@ public class ContactEditionActivity extends AppCompatActivity {
             Uri imageUri = data.getData();
             try {
                 InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageButton.setImageBitmap(selectedImage);
             } catch (Exception e) {
                 e.printStackTrace();
