@@ -1,24 +1,31 @@
 package com.example.fthangoutv03.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.fthangoutv03.Contact;
+import com.example.fthangoutv03.ContactEditionActivity;
+import com.example.fthangoutv03.ContactsActivity;
+import com.example.fthangoutv03.MessagesActivity;
 import com.example.fthangoutv03.R;
 
 import java.util.List;
 
 public class ContactAdapter extends BaseAdapter {
-    private Context context;
     private List<Contact> contacts;
     private LayoutInflater inflater;
+    private Context context;
 
     public ContactAdapter(Context context, List<Contact> contacts) {
         this.context = context;
@@ -52,17 +59,56 @@ public class ContactAdapter extends BaseAdapter {
         ImageView profileImageView = view.findViewById(R.id.profilePicture);
         TextView pseudoTextView = view.findViewById(R.id.pseudo);
         TextView phoneTextView = view.findViewById(R.id.phone_number);
+        Button editContactButton = view.findViewById(R.id.edit_contact);
+        Button openMessageButton = view.findViewById(R.id.open_message);
+        LinearLayout mainLayout = view.findViewById(R.id.main_layout);
+        LinearLayout button_layout = view.findViewById(R.id.button_layout);
 
         pseudoTextView.setText(currentItem.getFirstname() + " " + currentItem.getLastname());
         phoneTextView.setText(currentItem.getPhone());
 
-        byte[] photo = currentItem.getPicture();
-        if (photo != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(photo, 0, photo.length);
+        String imagePath = currentItem.getPicturePath();
+        Log.d("IMAGE", imagePath);
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             profileImageView.setImageBitmap(bitmap);
         } else {
             profileImageView.setImageResource(R.drawable.default_profile_picture);
         }
+
+        mainLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (button_layout.getVisibility() == View.GONE) {
+                    button_layout.setVisibility(View.VISIBLE);
+                } else {
+                    button_layout.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        editContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ContactEditionActivity.class);
+                intent.putExtra("firstname", currentItem.getFirstname());
+                intent.putExtra("lastname", currentItem.getLastname());
+                intent.putExtra("picturePath", currentItem.getPicturePath());
+                intent.putExtra("phone", currentItem.getPhone());
+                context.startActivity(intent);
+                ((ContactsActivity) context).finish();
+            }
+        });
+
+        openMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MessagesActivity.class);
+                intent.putExtra("phone", currentItem.getPhone());
+                context.startActivity(intent);
+                ((ContactsActivity) context).finish();
+            }
+        });
 
         return view;
     }

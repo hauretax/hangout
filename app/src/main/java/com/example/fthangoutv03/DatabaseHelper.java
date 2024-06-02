@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "messaging.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 8;
 
     //Contacts Table
     public static final String TABLE_CONTACTS = "contacts";
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_CONTACTS = "CREATE TABLE "
             + TABLE_CONTACTS + " ("
-            + COLUMN_CONTACT_PICTURE + " BLOB, "
+            + COLUMN_CONTACT_PICTURE + " TEXT, "
             + COLUMN_CONTACT_FIRSTNAME + " TEXT, "
             + COLUMN_CONTACT_LASTNAME + " TEXT, "
             + COLUMN_CONTACT_PHONE + " TEXT PRIMARY KEY"

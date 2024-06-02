@@ -1,37 +1,17 @@
 package com.example.fthangoutv03;
 
-import android.util.Log;
-
 import java.nio.Buffer;
 
 public class Contact {
     private String firstname;
     private String lastname;
     private String phone;
-    private byte[] picture;
+    private String picturePath;
 
     Contact() {
 
     }
 
-    Contact(String phone) {
-        phone = phone;
-        Log.d("TAG", "Contacte:" + phone);
-    }
-
-    Contact(String firstName, String secondName, String phone, Buffer picture) {
-        firstName = firstName;
-        secondName = secondName;
-        phone = phone;
-        picture = picture;
-    }
-
-    void updateContacte(String firstName, String secondName, String phone, Buffer image) {
-        firstName = firstName;
-        secondName = secondName;
-        phone = phone;
-        image = image;
-    }
 
     public void setPhone(String phone) {
         this.phone = phone;
@@ -57,11 +37,10 @@ public class Contact {
         return lastname;
     }
 
-    public byte[] getPicture() {
-        return picture;
+    public String getPicturePath() {
+        return picturePath;
     }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
+    public void setPicturePath( String picturePath) {
+        this.picturePath = picturePath;
     }
 }

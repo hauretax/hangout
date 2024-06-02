@@ -18,4 +18,7 @@
     <string name="lastname">Prenom</string>
     <string name="select_pictur">Sélectionner une photo</string>
     <string name="select_picture">photo selectionner</string>
+    <string name="add_new_contact">Ajouter un nouveaux contacte</string>
+    <string name="extended_fab_edit_contact">bouton d\'edition d\'un nouveaux contacte</string>
+    <string name="edit_contact">editer</string>
 </resources>

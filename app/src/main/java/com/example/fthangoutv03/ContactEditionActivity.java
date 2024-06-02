@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -20,13 +21,42 @@ import java.io.InputStream;
 public class ContactEditionActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageButton imageButton;
-    private Bitmap selectedImage;
+    private Bitmap selectedImage = null;
     private DataSource datasource;
+    private boolean haveImage = false;
+
+    private boolean isUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_edition);
+
+        Intent intent = getIntent();
+
+        if (intent.hasExtra("phone")) {
+            CustomInput phone = findViewById(R.id.phone_input);
+            phone.setInput(intent.getStringExtra("phone"));
+            if (intent.hasExtra("firstname")) {
+                CustomInput firstName = findViewById(R.id.firstname_input);
+                firstName.setInput(intent.getStringExtra("firstname"));
+            }
+            if (intent.hasExtra("lastname")) {
+                CustomInput lastName = findViewById(R.id.lastname_input);
+                lastName.setInput(intent.getStringExtra("lastname"));
+            }
+
+            ImageButton profileImageView = findViewById(R.id.buttonSelectPhoto);
+            String imagePath = intent.getStringExtra("picturePath");
+            Log.d("IMAGE", imagePath);
+            if (imagePath != null && !imagePath.isEmpty()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                profileImageView.setImageBitmap(bitmap);
+            } else {
+                profileImageView.setImageResource(R.drawable.default_profile_picture);
+            }
+            isUpdate = true;
+        }
 
         datasource = new DataSource(this);
         datasource.open();
@@ -45,7 +75,9 @@ public class ContactEditionActivity extends AppCompatActivity {
                 CustomInput phone = findViewById(R.id.phone_input);
                 CustomInput firstName = findViewById(R.id.firstname_input);
                 CustomInput lastName = findViewById(R.id.lastname_input);
+
                 datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
+
                 finish();
             }
         });
@@ -75,6 +107,7 @@ public class ContactEditionActivity extends AppCompatActivity {
                 InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageButton.setImageBitmap(selectedImage);
+                haveImage = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }

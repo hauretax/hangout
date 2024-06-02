@@ -53,4 +53,7 @@ public class CustomInput extends LinearLayout {
     public String getInput() {
         return editText.getText().toString();
     }
+    public void setInput(String text) {
+        editText.setText(text);
+    }
 }
