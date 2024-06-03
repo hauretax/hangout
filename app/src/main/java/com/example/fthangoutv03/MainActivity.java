@@ -1,7 +1,16 @@
 package com.example.fthangoutv03;
 
+import static androidx.appcompat.app.AppCompatDelegate.create;
+
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.fthangoutv03.adapters.ContactMessageAdapter;
 
@@ -25,6 +36,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final Uri SMS_URI_ALL = Uri.parse("content://sms/");
+
+    private static final Uri SMS_URI_INBOX = Uri.parse("content://sms/inbox");
+
+    private static final Uri SMS_URI_OUTBOX = Uri.parse("content://sms/sent");
+
+    private static final int PERMISSION_REQUEST_READ_SMS = 123;
+
     private ContactMessageAdapter adapter;
     private List<MessageTicket> messages;
     private DatabaseHelper dbHelper;
@@ -36,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        checkAndRequestSmsPermission();
+
 
         messages = fetchAndSortMessages();
         ListView messageListView = findViewById(R.id.list_item);
@@ -53,6 +75,34 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void checkAndRequestSmsPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_SMS}, PERMISSION_REQUEST_READ_SMS);
+
+            Log.d("retrieveMessages", "demande faite");
+        } else {
+            retrieveMessages(getContentResolver());
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_READ_SMS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                Log.d("retrieveMessages", "accepted");
+                retrieveMessages(getContentResolver());
+            } else {
+                Log.d("retrieveMessages", "Permission READ_SMS refusée");
+            }
+        }
     }
 
     @Override
@@ -82,6 +132,31 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         return true;
     }
+
+    private void retrieveMessages(ContentResolver contentResolver) {
+
+        final Cursor cursor = contentResolver.query(SMS_URI_INBOX, null, null, null, null);
+        if (cursor == null) {
+            Log.e("retrieveMessages", "Cannot retrieve the messages");
+            return;
+        }
+        if (cursor.moveToFirst() == true) {
+            do {
+                final String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+                final String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
+
+                Log.d("retrieveContacts", "The message with from + '" + address + "' with the body '" + body + "' has been retrieved");
+
+            }
+            while (cursor.moveToNext() == true);
+        }
+        if (cursor.isClosed() == false) {
+            cursor.close();
+        }
+
+
+    }
+
 
     private List<MessageTicket> fetchAndSortMessages() {
         List<MessageTicket> messageTicketList = new ArrayList<>();
