@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +84,12 @@ public class DataSource {
         values.put(DatabaseHelper.COLUMN_CONTACT_FIRSTNAME, firstname);
         values.put(DatabaseHelper.COLUMN_CONTACT_LASTNAME, lastname);
         values.put(DatabaseHelper.COLUMN_CONTACT_PHONE, phone);
+        values.put(DatabaseHelper.COLUMN_LAST_SEE, 0);
 
         return db.insert(DatabaseHelper.TABLE_CONTACTS, null, values);
     }
 
-    public int updateContact(String firstname, String lastname, String phone, Bitmap picture) {
+    public int updateContact(String OldPhone, String firstname, String lastname, String phone, Bitmap picture) {
         SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -103,15 +105,15 @@ public class DataSource {
         values.put(DatabaseHelper.COLUMN_CONTACT_PHONE, phone);
 
         return db.update(DatabaseHelper.TABLE_CONTACTS, values,
-                DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?", new String[]{String.valueOf(phone)});
+                DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?", new String[]{String.valueOf(OldPhone)});
     }
 
-    public long addMessage(long contactId, String content) {
+    public void updateLastSeen(String phone) {
         SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_MESSAGE_CONTACT_PHONE, contactId);
-        values.put(DatabaseHelper.COLUMN_MESSAGE_CONTENT, content);
-        return db.insert(DatabaseHelper.TABLE_MESSAGES, null, values);
+        values.put(DatabaseHelper.COLUMN_LAST_SEE, new Timestamp(System.currentTimeMillis()).toString());
+        db.update(DatabaseHelper.TABLE_CONTACTS, values,
+                DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?", new String[]{String.valueOf(phone)});
     }
 
     public List<Contact> getAllContacts() {
@@ -128,7 +130,7 @@ public class DataSource {
                 } while (cursor.moveToNext());
             }
         }  catch (Exception e) {
-            Log.e("TAG", "Error querying contacts", e);
+            Log.e("error", "Error querying contacts", e);
         }finally {
             if (cursor != null) {
                 cursor.close();

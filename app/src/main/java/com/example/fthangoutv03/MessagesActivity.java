@@ -1,34 +1,88 @@
 package com.example.fthangoutv03;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Telephony;
+import android.telephony.SmsManager;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-import com.example.fthangoutv03.adapters.ContactMessageAdapter;
 import com.example.fthangoutv03.adapters.MessagesAdapter;
+import com.example.fthangoutv03.intercept.SmsReceiver;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Arrays;
+
+import android.view.View;
+import android.widget.Toast;
+
 import java.util.Date;
 import java.util.List;
 
 public class MessagesActivity extends AppCompatActivity {
+    private SmsReceiver smsReceiver;
+    private static final Uri SMS_URI_ALL = Uri.parse("content://sms/");
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+
     private MessagesAdapter adapter;
     private List<Message> messages;
+    EditText inputEditText;
+    Button sendButton;
+    ListView messageListView;
+
+    private String number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages);
 
-        messages = fetchAndSortMessages();
-        ListView messageListView = findViewById(R.id.list_messages);
+        inputEditText = findViewById(R.id.inputEditText);
+        sendButton = findViewById(R.id.sendButton);
+
+        number = "";
+        Intent intent = getIntent();
+        if (intent.hasExtra("number")) {
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            number = intent.getStringExtra("number");
+            setSupportActionBar(toolbar);
+            Log.d("TAG", "number: " + number);
+            toolbar.setTitle(number);
+        }
+
+        messages = retrieveMessages(getContentResolver(), number);
+        messageListView = findViewById(R.id.list_messages);
         adapter = new MessagesAdapter(this, messages);
         messageListView.setAdapter(adapter);
+
+        inputEditText = findViewById(R.id.inputEditText);
+        sendButton = findViewById(R.id.sendButton);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendSMSMessage();
+            }
+        });
 
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
         onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
@@ -37,37 +91,131 @@ public class MessagesActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
 
-    private List<Message> fetchAndSortMessages() {
-        List<Message> messages = new ArrayList<>();
-        messages.add(new Message("0761136714", "Quelqu'un a vu mes lunettes? Je les ai posées quelque part dans la maison et maintenant je ne les trouve plus. J'ai cherché partout dans le salon et la cuisine mais rien. Si quelqu'un les trouve, merci de me prévenir.", new Date(124, 4, 12, 10, 45), false, false));
-        messages.add(new Message("0761116714", "Il fait beau aujourd'hui. Le soleil brille et il n'y a presque pas de nuages. C'est le temps parfait pour aller faire une balade ou passer du temps dehors. Profitez bien de cette belle journée!", new Date(124, 4, 16, 9, 15), false, false));
-        messages.add(new Message("0761316714", "On se retrouve ce soir? J'ai réservé une table au restaurant italien à 20h. Ce sera l'occasion de se détendre et de discuter de nos projets pour le week-end. J'espère que tu pourras venir!", new Date(124, 4, 11, 11, 50), false, true));
-        messages.add(new Message("0761416714", "J'ai perdu mes clés. Je suis vraiment désespéré, je ne peux pas rentrer chez moi sans elles. Si quelqu'un les trouve, merci de me les rapporter ou de me prévenir immédiatement. Je suis vraiment dans le pétrin.", new Date(124, 4, 7, 13, 10), false, true));
-        messages.add(new Message("0761516714", "Quelqu'un veut un café? Je suis au café du coin et je pensais commander pour tout le monde. Dites-moi si vous voulez quelque chose en particulier. Sinon, je prendrai un assortiment de boissons et de pâtisseries.", new Date(124, 4, 7, 8, 40), false, true));
-        messages.add(new Message("0761916714", "J'ai fini mon travail! C'était un projet vraiment compliqué mais je suis content de l'avoir terminé à temps. Maintenant, je vais pouvoir me détendre et profiter de la soirée. Si quelqu'un veut se joindre à moi, faites-moi signe.", new Date(124, 4, 8, 17, 30), false, true));
-        messages.add(new Message("0761716714", "Je suis en retard. Il y a eu un problème avec les transports en commun ce matin. Je vais essayer de prendre un taxi pour arriver le plus vite possible. Désolé pour le désagrément et merci de votre compréhension.", new Date(124, 4, 3, 15, 0), false, true));
-        messages.add(new Message("0761816714", "On se voit demain. J'ai quelques trucs à faire aujourd'hui, mais je serai libre demain toute la journée. On pourrait se retrouver pour déjeuner et passer l'après-midi ensemble. Qu'en penses-tu?", new Date(124, 4, 2, 12, 25), false, true));
-        messages.add(new Message("0762216714", "Je vais au cinéma ce soir. Il y a un nouveau film qui vient de sortir et j'ai entendu de bonnes critiques à son sujet. Si quelqu'un veut se joindre à moi, nous pourrions aller ensemble. Faites-moi savoir rapidement!", new Date(124, 4, 11, 14, 35), false, false));
-        messages.add(new Message("0762316714", "J'ai besoin d'aide. Je suis en train de monter un meuble Ikea et je me rends compte que c'est beaucoup plus compliqué que ce que je pensais. Si quelqu'un a un peu de temps pour venir m'aider, ce serait vraiment apprécié.", new Date(124, 4, 1, 10, 5), false, true));
-        messages.add(new Message("0762416714", "Quelqu'un veut sortir? Je me sens un peu enfermé à la maison et j'ai envie de prendre l'air. On pourrait aller boire un verre ou faire une promenade en ville. Qui est partant pour une petite sortie?", new Date(124, 4, 3, 18, 15), false, true));
-        messages.add(new Message("0762516714", "J'ai un rendez-vous. C'est un rendez-vous assez important pour moi, alors je suis un peu nerveux. Si tout se passe bien, je vous raconterai tout en détail plus tard. Souhaitez-moi bonne chance!", new Date(124, 4, 4, 9, 55), false, true));
-        messages.add(new Message("0763116714", "Je suis chez moi. Si quelqu'un a besoin de quelque chose ou veut passer dire bonjour, n'hésitez pas. J'ai fait des cookies et du café, donc vous êtes les bienvenus pour une petite pause gourmande.", new Date(124, 4, 3, 16, 45), false, true));
-        messages.add(new Message("0763216714", "Je travaille sur un projet. C'est un projet assez ambitieux et je manque un peu d'inspiration pour remplir certains blocs. Je vais essayer de trouver des idées et avancer le plus possible aujourd'hui. Let's go, on fonce!", new Date(124, 1, 16, 11, 20), false, true));
-        messages.add(new Message("0763316714", "Quel est le plan pour ce soir? Je me demandais si nous avions quelque chose de prévu ou si nous devions improviser. Personnellement, je serais partant pour un dîner quelque part en ville. Qu'en dites-vous?", new Date(124, 4, 16, 13, 35), false, true));
-        messages.add(new Message("0763416714", "Je suis en réunion. C'est une réunion assez longue et je ne sais pas quand elle se terminera. Si c'est urgent, envoyez-moi un message et je vous répondrai dès que possible. Merci de votre patience.", new Date(124, 4, 1, 10, 10), false, true));
-        messages.add(new Message("0763516714", "Bonjour tout le monde! J'espère que vous avez bien dormi et que vous êtes prêts pour une nouvelle journée. Si quelqu'un a besoin de quelque chose, n'hésitez pas à me le faire savoir. Passez une excellente journée!", new Date(124, 4, 3, 10, 30), false, true));
-        messages.add(new Message("0763616714", "J'ai terminé mon rapport. C'était un travail long et fastidieux mais je suis content du résultat. Je vais maintenant l'envoyer à qui de droit et espérer que tout soit en ordre. Merci pour votre soutien!", new Date(124, 1, 19, 17, 50), false, true));
-        messages.add(new Message("0763716714", "Quelqu'un a faim? Je pensais commander quelque chose à manger et je voulais savoir si quelqu'un voulait se joindre à moi. On pourrait commander une pizza ou des sushis. Faites-moi savoir vos préférences.", new Date(124, 4, 2, 15, 25), false, true));
-
-        Collections.sort(messages, new Comparator<Message>() {
+        smsReceiver = new SmsReceiver();
+        SmsReceiver.setSmsListener(new SmsReceiver.SmsListener() {
             @Override
-            public int compare(Message o1, Message o2) {
-                return o2.getReceivedDate().compareTo(o1.getReceivedDate());
+            public void onSmsReceived(String sender, String message) {
+                if (sender.equals(number)) {
+                    messages.add(new Message(sender, message, new Date(), false, true));
+                    adapter.setMessages(messages);
+                    adapter.notifyDataSetChanged();
+
+                    ContentValues values = new ContentValues();
+                    values.put("read", true);
+                    String selection = "address = ? AND body = ? AND read = ?";
+                    String[] selectionArgs = {sender, message, "0"};
+
+                    ContentResolver contentResolver = getContentResolver();
+                    int rowsUpdated = contentResolver.update(Uri.parse("content://sms/inbox"), values, selection, selectionArgs);
+
+                    if (rowsUpdated > 0) {
+                        Log.d("SmsReceiver", "Message marked as read.");
+                    } else {
+                        Log.d("SmsReceiver", "Failed to mark message as read or message already read.");
+                    }
+                }
             }
         });
+    }
+
+    protected void sendSMSMessage() {
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+        } else {
+            SmsManager smsManager = SmsManager.getDefault();
+            String body = inputEditText.getText().toString();
+            smsManager.sendTextMessage(number, null, body, null, null);
+
+            messages.add(new Message(number, body, new Date(), true, false));
+            adapter.setMessages(messages);
+            adapter.notifyDataSetChanged();
+            inputEditText.setText("");
+
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(inputEditText.getWindowToken(), 0);
+
+
+            Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(smsReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(smsReceiver);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendSMSMessage();
+                } else {
+                    Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
+    }
+
+    private List<Message> retrieveMessages(ContentResolver contentResolver, String number) {
+
+        final Cursor cursor = contentResolver.query(SMS_URI_ALL, null, "address = ?", new String[]{number}, "date ASC");
+        android.util.Log.i("COLUMNS", Arrays.toString(cursor.getColumnNames()));
+        List<Message> messages = new ArrayList<>();
+
+        if (cursor == null) {
+            Log.e("error: retrieveMessages", "Cannot retrieve the messages");
+            return messages;
+        }
+        if (cursor.moveToFirst() == true) {
+            do {
+                String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+                int type = cursor.getInt(cursor.getColumnIndexOrThrow("type"));
+                String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
+                final String timestamp = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+                int seen = cursor.getInt(cursor.getColumnIndexOrThrow("seen"));
+                Timestamp stamp = new Timestamp(Long.valueOf(timestamp));
+                Date date = new Date(stamp.getTime());
+                messages.add(new Message(address, body, date, true, (type == 1)));
+                if (seen == 0) {
+                    markMessageAsSeen(id);
+                }
+            }
+            while (cursor.moveToNext() == true);
+        }
+        if (cursor.isClosed() == false) {
+            cursor.close();
+        }
 
         return messages;
+    }
+
+    private void markMessageAsSeen(int messageId) {
+        Uri messageUri = Uri.withAppendedPath(Telephony.Sms.CONTENT_URI, String.valueOf(messageId));
+
+        ContentValues values = new ContentValues();
+        values.put("seen", 1);
+
+        int rowsUpdated = getContentResolver().update(messageUri, values, null, null);
+
+        if (rowsUpdated > 0) {
+            Toast.makeText(this, "Message marked as seen", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Failed to mark message as seen", Toast.LENGTH_SHORT).show();
+        }
     }
 }

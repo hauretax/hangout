@@ -6,12 +6,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "messaging.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     //Contacts Table
     public static final String TABLE_CONTACTS = "contacts";
     public static final String COLUMN_CONTACT_FIRSTNAME = "firstname";
     public static final String COLUMN_CONTACT_LASTNAME = "secondname";
+    public static final String COLUMN_LAST_SEE = "last_see";
     public static final String COLUMN_CONTACT_PHONE = "phone";
     public static final String COLUMN_CONTACT_PICTURE = "picture";
 
@@ -27,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_CONTACT_PICTURE + " TEXT, "
             + COLUMN_CONTACT_FIRSTNAME + " TEXT, "
             + COLUMN_CONTACT_LASTNAME + " TEXT, "
+            + COLUMN_LAST_SEE + "TEXT ,"
             + COLUMN_CONTACT_PHONE + " TEXT PRIMARY KEY"
             + ")";
 

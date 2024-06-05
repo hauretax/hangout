@@ -25,7 +25,7 @@ public class ContactEditionActivity extends AppCompatActivity {
     private DataSource datasource;
     private boolean haveImage = false;
 
-    private boolean isUpdate = false;
+    private String oldPhone = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class ContactEditionActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent.hasExtra("phone")) {
+            oldPhone = intent.getStringExtra("phone");
             CustomInput phone = findViewById(R.id.phone_input);
             phone.setInput(intent.getStringExtra("phone"));
             if (intent.hasExtra("firstname")) {
@@ -55,7 +56,6 @@ public class ContactEditionActivity extends AppCompatActivity {
             } else {
                 profileImageView.setImageResource(R.drawable.default_profile_picture);
             }
-            isUpdate = true;
         }
 
         datasource = new DataSource(this);
@@ -76,8 +76,12 @@ public class ContactEditionActivity extends AppCompatActivity {
                 CustomInput firstName = findViewById(R.id.firstname_input);
                 CustomInput lastName = findViewById(R.id.lastname_input);
 
-                datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
 
+                if (oldPhone.isEmpty()) {
+                    datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
+                } else {
+                    datasource.updateContact(oldPhone,firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
+                }
                 finish();
             }
         });

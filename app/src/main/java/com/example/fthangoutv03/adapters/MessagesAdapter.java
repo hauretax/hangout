@@ -79,14 +79,12 @@ public class MessagesAdapter extends BaseAdapter {
             constraintSet.connect(cardView.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 16);
             constraintSet.clear(cardView.getId(), ConstraintSet.END);
             messageTextView.setPadding(16, 8, 16, 8);
-            Log.d("TAG", "Gravity set to START, Padding set to (16, 8, 16, 8)");
-        } else {
+           } else {
             constraintSet.connect(cardView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 8);
             constraintSet.connect(cardView.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 16);
             constraintSet.clear(cardView.getId(), ConstraintSet.START);
             messageTextView.setBackgroundColor(Color.CYAN);
             messageTextView.setPadding(16, 8, 16, 8);
-            Log.d("TAG", "Gravity set to END, Padding set to (16, 8, 16, 8)");
         }
         constraintSet.applyTo(constraintLayout);
     }
@@ -108,5 +106,9 @@ public class MessagesAdapter extends BaseAdapter {
             formattedDate = dateFormatter.format(lastSend);
         }
         return formattedDate;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

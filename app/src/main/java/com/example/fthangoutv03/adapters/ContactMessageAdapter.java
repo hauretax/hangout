@@ -54,7 +54,7 @@ public class ContactMessageAdapter extends BaseAdapter {
 
         TextView pseudoTextView = view.findViewById(R.id.pseudo);
         TextView messageTextView = view.findViewById(R.id.message);
-
+        
         if (!currentItem.isRead()) {
             pseudoTextView.setTypeface(null, Typeface.BOLD);
             messageTextView.setTypeface(null, Typeface.BOLD);
@@ -72,6 +72,8 @@ public class ContactMessageAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.lastSend)).setText(formatDate(currentItem.getReceivedDate()));
 
         ((ImageView) view.findViewById(R.id.profilePicture)).setImageResource(R.drawable.default_profile_picture);
+
+
 
         return view;
     }
