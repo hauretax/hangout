@@ -84,7 +84,6 @@ public class DataSource {
         values.put(DatabaseHelper.COLUMN_CONTACT_FIRSTNAME, firstname);
         values.put(DatabaseHelper.COLUMN_CONTACT_LASTNAME, lastname);
         values.put(DatabaseHelper.COLUMN_CONTACT_PHONE, phone);
-        values.put(DatabaseHelper.COLUMN_LAST_SEE, 0);
 
         return db.insert(DatabaseHelper.TABLE_CONTACTS, null, values);
     }
@@ -108,13 +107,6 @@ public class DataSource {
                 DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?", new String[]{String.valueOf(OldPhone)});
     }
 
-    public void updateLastSeen(String phone) {
-        SQLiteDatabase db = this.dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_LAST_SEE, new Timestamp(System.currentTimeMillis()).toString());
-        db.update(DatabaseHelper.TABLE_CONTACTS, values,
-                DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?", new String[]{String.valueOf(phone)});
-    }
 
     public List<Contact> getAllContacts() {
         List<Contact> contacts = new ArrayList<Contact>();
@@ -138,6 +130,41 @@ public class DataSource {
         }
         return contacts;
     }
+
+    public Contact getContactByPhone(String phoneNumber) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Contact contact = null;
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(
+                    DatabaseHelper.TABLE_CONTACTS,
+                    new String[]{DatabaseHelper.COLUMN_CONTACT_FIRSTNAME, DatabaseHelper.COLUMN_CONTACT_LASTNAME, DatabaseHelper.COLUMN_CONTACT_PHONE, DatabaseHelper.COLUMN_CONTACT_PICTURE},
+                    DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?",
+                    new String[]{phoneNumber},
+                    null,
+                    null,
+                    null
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                Log.d("cursor", "shit happend");
+
+                contact = cursorToContact(cursor);
+
+                Log.d("cursor", contact.getFirstname());
+            }
+        } catch (Exception e) {
+            Log.e("error", "Error querying contact by phone", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return contact;
+    }
+
 
     //set contact
     @SuppressLint("Range")

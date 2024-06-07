@@ -104,7 +104,7 @@ public class MessagesActivity extends AppCompatActivity {
                     ContentValues values = new ContentValues();
                     values.put("read", true);
                     String selection = "address = ? AND body = ? AND read = ?";
-                    String[] selectionArgs = {sender, message, "0"};
+                    String[] selectionArgs = {sender, message, "1"};
 
                     ContentResolver contentResolver = getContentResolver();
                     int rowsUpdated = contentResolver.update(Uri.parse("content://sms/inbox"), values, selection, selectionArgs);

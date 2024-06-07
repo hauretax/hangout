@@ -33,6 +33,10 @@ public class Contact {
         this.lastname = lastname;
     }
 
+    public String getName() {
+        return firstname + " " + lastname;
+    }
+
     public String getLastname() {
         return lastname;
     }
@@ -40,7 +44,8 @@ public class Contact {
     public String getPicturePath() {
         return picturePath;
     }
-    public void setPicturePath( String picturePath) {
+
+    public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
 }

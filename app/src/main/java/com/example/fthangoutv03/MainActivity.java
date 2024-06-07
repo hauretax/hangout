@@ -4,8 +4,10 @@ import static androidx.appcompat.app.AppCompatDelegate.create;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,13 +28,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.fthangoutv03.adapters.ContactMessageAdapter;
+import com.example.fthangoutv03.intercept.SmsReceiver;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final Uri SMS_URI_OUTBOX = Uri.parse("content://sms/sent");
 
     private static final int PERMISSION_REQUEST_READ_SMS = 123;
-
+    private SmsReceiver smsReceiver;
     private ContactMessageAdapter adapter;
     private List<MessageTicket> messages;
     private DatabaseHelper dbHelper;
@@ -79,7 +85,54 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        smsReceiver = new SmsReceiver();
+        SmsReceiver.setSmsListener(new SmsReceiver.SmsListener() {
+            @Override
+            public void onSmsReceived(String sender, String message) {
+
+                Log.d("smsreceiver", "sender: " + sender + " message: "+message);
+                Iterator<MessageTicket> iterator = messages.iterator();
+                while (iterator.hasNext()) {
+
+                    MessageTicket ticket = iterator.next();
+                    if (ticket.getNumber().equals(sender)) {
+                        iterator.remove();
+                    }
+                }
+                messages.add(0,new MessageTicket(sender, message, new Date(), false, true));
+
+                adapter.setMessages(messages);
+                adapter.notifyDataSetChanged();
+
+
+            }
+        });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(smsReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(smsReceiver);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        messages = retrieveMessages(getContentResolver());
+        ListView messageListView = findViewById(R.id.list_item);
+        adapter = new ContactMessageAdapter(this, messages);
+        messageListView.setAdapter(adapter);
+        recreate();
+    }
+
 
     private void checkAndRequestSmsPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS)
@@ -142,10 +195,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public static void addMessageTicket(List<MessageTicket> messageTicketList, Set<String> existingAddresses,
+                                        String address, String body, Date date) {
+
+    }
+
     private List<MessageTicket> retrieveMessages(ContentResolver contentResolver) {
 
-        final Cursor cursor = contentResolver.query(SMS_URI_INBOX, null, null, null, "date ASC");
+        final Cursor cursor = contentResolver.query(SMS_URI_ALL, null, null, null, "date DESC");
+
         List<MessageTicket> messageTicketList = new ArrayList<>();
+        Set<String> existingAddresses = new HashSet<>();
         if (cursor == null) {
             Log.e("error: retrieveMessages", "Cannot retrieve the messages");
             return messageTicketList;
@@ -155,9 +215,15 @@ public class MainActivity extends AppCompatActivity {
                 final String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
                 final String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
                 final String timestamp = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                final String read = cursor.getString(cursor.getColumnIndexOrThrow("read"));
+                final int type = cursor.getInt(cursor.getColumnIndexOrThrow("type"));
                 Timestamp stamp = new Timestamp(Long.valueOf(timestamp));
                 Date date = new Date(stamp.getTime());
-                messageTicketList.add(new MessageTicket(address, body, date, false, true));
+                if (!existingAddresses.contains(address)) {
+                    existingAddresses.add(address);
+
+                    messageTicketList.add(new MessageTicket(address, body, date, (read.equals("1") || type == 2), true));
+                }
             }
             while (cursor.moveToNext() == true);
         }
@@ -165,12 +231,7 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
         }
 
-        Collections.sort(messageTicketList, new Comparator<MessageTicket>() {
-            @Override
-            public int compare(MessageTicket o1, MessageTicket o2) {
-                return o2.getReceivedDate().compareTo(o1.getReceivedDate());
-            }
-        });
+
         return messageTicketList;
     }
 

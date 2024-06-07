@@ -1,7 +1,9 @@
 package com.example.fthangoutv03.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.fthangoutv03.Contact;
+import com.example.fthangoutv03.DataSource;
 import com.example.fthangoutv03.MessageTicket;
 import com.example.fthangoutv03.R;
 
@@ -21,6 +25,8 @@ public class ContactMessageAdapter extends BaseAdapter {
     private Context context;
     private List<MessageTicket> messageTicketList;
     private LayoutInflater inflater;
+
+    private DataSource dataSource;
 
     public ContactMessageAdapter(Context context, List<MessageTicket> messageTicketList) {
         this.context = context;
@@ -51,28 +57,24 @@ public class ContactMessageAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.message_ticket, null);
         }
         MessageTicket currentItem = getItem(i);
-
+        dataSource = new DataSource(context);
+        dataSource.open();
+        Contact contact = dataSource.getContactByPhone(currentItem.getNumber());
+        dataSource.close();
         TextView pseudoTextView = view.findViewById(R.id.pseudo);
         TextView messageTextView = view.findViewById(R.id.message);
-        
-        if (!currentItem.isRead()) {
-            pseudoTextView.setTypeface(null, Typeface.BOLD);
-            messageTextView.setTypeface(null, Typeface.BOLD);
+
+
+        if (contact != null && !contact.getName().isEmpty()) {
+            pseudoTextView.setText(contact.getName());
         } else {
-            pseudoTextView.setTypeface(null, Typeface.NORMAL);
-            messageTextView.setTypeface(null, Typeface.NORMAL);
-        }
-        if (currentItem.getName().isEmpty()) {
             pseudoTextView.setText(currentItem.getNumber());
-        } else {
-            pseudoTextView.setText(currentItem.getName());
         }
         messageTextView.setText(currentItem.getMessage());
 
         ((TextView) view.findViewById(R.id.lastSend)).setText(formatDate(currentItem.getReceivedDate()));
 
         ((ImageView) view.findViewById(R.id.profilePicture)).setImageResource(R.drawable.default_profile_picture);
-
 
 
         return view;
@@ -94,5 +96,10 @@ public class ContactMessageAdapter extends BaseAdapter {
             formattedDate = dateFormatter.format(lastSend);
         }
         return formattedDate;
+    }
+
+    public void setMessages(List<MessageTicket> messages) {
+        this.messageTicketList = messages;
+        notifyDataSetChanged();
     }
 }
