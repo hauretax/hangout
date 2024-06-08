@@ -30,9 +30,6 @@ public class Message {
         return receivedDate;
     }
 
-    public Boolean isRead() {
-        return read;
-    }
 
     public String getSendTo() {return sendTo;}
 

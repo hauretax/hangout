@@ -37,6 +37,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     String sender = smsMessage.getDisplayOriginatingAddress();
                     String message = smsMessage.getMessageBody();
 
+                    Log.d("SmsReceiver", "SMS received from: " + sender + ", message: " + message);
 
                     if (listener != null) {
                         listener.onSmsReceived(sender, message);

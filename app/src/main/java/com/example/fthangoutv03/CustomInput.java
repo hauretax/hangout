@@ -32,24 +32,13 @@ public class CustomInput extends LinearLayout {
 
         String hintText = attributes.getString(R.styleable.CustomInput_hintText);
         if (hintText == null) {
-            hintText = "Entrez du texte ici";
+            hintText = "";
         }
         editText.setHint(hintText);
 
         attributes.recycle();
     }
 
-    public void setLabelText(String text) {
-        label.setText(text);
-    }
-
-    public void setHintText(String text) {
-        editText.setHint(text);
-    }
-
-    public EditText getEditText() {
-        return editText;
-    }
     public String getInput() {
         return editText.getText().toString();
     }

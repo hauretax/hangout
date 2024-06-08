@@ -16,6 +16,6 @@
         android:id="@+id/TextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Entrez du texte ici" />
+        android:hint="" />
 
 </LinearLayout>

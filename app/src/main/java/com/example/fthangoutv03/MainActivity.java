@@ -1,10 +1,6 @@
 package com.example.fthangoutv03;
 
-import static androidx.appcompat.app.AppCompatDelegate.create;
-
-import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -18,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,8 +27,6 @@ import com.example.fthangoutv03.intercept.SmsReceiver;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,15 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final Uri SMS_URI_ALL = Uri.parse("content://sms/");
 
-    private static final Uri SMS_URI_INBOX = Uri.parse("content://sms/inbox");
-
-    private static final Uri SMS_URI_OUTBOX = Uri.parse("content://sms/sent");
-
     private static final int PERMISSION_REQUEST_READ_SMS = 123;
     private SmsReceiver smsReceiver;
     private ContactMessageAdapter adapter;
     private List<MessageTicket> messages;
-    private DatabaseHelper dbHelper;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -194,11 +182,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public static void addMessageTicket(List<MessageTicket> messageTicketList, Set<String> existingAddresses,
-                                        String address, String body, Date date) {
-
-    }
-
     private List<MessageTicket> retrieveMessages(ContentResolver contentResolver) {
 
         final Cursor cursor = contentResolver.query(SMS_URI_ALL, null, null, null, "date DESC");
@@ -209,14 +192,14 @@ public class MainActivity extends AppCompatActivity {
             Log.e("error: retrieveMessages", "Cannot retrieve the messages");
             return messageTicketList;
         }
-        if (cursor.moveToFirst() == true) {
+        if (cursor.moveToFirst()) {
             do {
                 final String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
                 final String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
                 final String timestamp = cursor.getString(cursor.getColumnIndexOrThrow("date"));
                 final String read = cursor.getString(cursor.getColumnIndexOrThrow("read"));
                 final int type = cursor.getInt(cursor.getColumnIndexOrThrow("type"));
-                Timestamp stamp = new Timestamp(Long.valueOf(timestamp));
+                Timestamp stamp = new Timestamp(Long.parseLong(timestamp));
                 Date date = new Date(stamp.getTime());
                 if (!existingAddresses.contains(address)) {
                     existingAddresses.add(address);
@@ -224,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
                     messageTicketList.add(new MessageTicket(address, body, date, (read.equals("1") || type == 2), true));
                 }
             }
-            while (cursor.moveToNext() == true);
+            while (cursor.moveToNext());
         }
-        if (cursor.isClosed() == false) {
+        if (!cursor.isClosed()) {
             cursor.close();
         }
 

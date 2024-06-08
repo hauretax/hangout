@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/contacte_edition"
+            android:text="@string/contact_edition"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white"
             android:id="@+id/toolbar_title"
@@ -34,7 +34,6 @@
         android:scaleType="centerCrop"
         android:src="@drawable/default_profile_picture"
         android:background="@android:color/transparent"
-        android:onClick="onSelectPhotoButtonClick"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -16,14 +16,16 @@
     <string name="phone">Numero</string>
     <string name="firstname">Nom</string>
     <string name="lastname">Prenom</string>
-    <string name="select_pictur">Sélectionner une photo</string>
+    <string name="french_flag">drapeaub francais</string>
+    <string name="english_flag">drapeau englais</string>
+    <string name="select_a_picture">selectionner une photo</string>
     <string name="select_picture">photo selectionner</string>
     <string name="add_new_contact">Ajouter un nouveaux contacte</string>
     <string name="extended_fab_edit_contact">bouton d\'edition d\'un nouveaux contacte</string>
     <string name="edit_contact">editer</string>
     <string name="already_use_number">numeros déjas utiliser</string>
-    <string name="contacte_edition">edition de contacte</string>
+    <string name="contact_edition">edition du contacte</string>
     <string name="search_contacts">chercher un contacte</string>
-    <string name="yours_contacte">vos contactes</string>
+    <string name="yours_contact">vos contactes</string>
     <string name="delete_contact">supprimer</string>
 </resources>

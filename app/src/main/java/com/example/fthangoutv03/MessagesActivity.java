@@ -116,7 +116,7 @@ public class MessagesActivity extends AppCompatActivity {
                     String[] selectionArgs = {sender, message, "1"};
 
                     ContentResolver contentResolver = getContentResolver();
-                    int rowsUpdated = contentResolver.update(Uri.parse("content://sms/inbox"), values, selection, selectionArgs);
+                    contentResolver.update(Uri.parse("content://sms/inbox"), values, selection, selectionArgs);
                 }
             }
         });
@@ -143,8 +143,9 @@ public class MessagesActivity extends AppCompatActivity {
             inputMethodManager.hideSoftInputFromWindow(inputEditText.getWindowToken(), 0);
 
 
-      }
+        }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -157,18 +158,16 @@ public class MessagesActivity extends AppCompatActivity {
         super.onPause();
         unregisterReceiver(smsReceiver);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    sendSMSMessage();
-                } else {
-                    Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
+
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            sendSMSMessage();
+        } else {
+            Toast.makeText(getApplicationContext(), "SMS failed, please try again.", Toast.LENGTH_LONG).show();
+            return;
         }
     }
 
@@ -190,7 +189,7 @@ public class MessagesActivity extends AppCompatActivity {
                 final String timestamp = cursor.getString(cursor.getColumnIndexOrThrow("date"));
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
                 int seen = cursor.getInt(cursor.getColumnIndexOrThrow("seen"));
-                Timestamp stamp = new Timestamp(Long.valueOf(timestamp));
+                Timestamp stamp = new Timestamp(Long.parseLong(timestamp));
                 Date date = new Date(stamp.getTime());
                 messages.add(new Message(address, body, date, true, (type == 1)));
                 if (seen == 0) {
@@ -212,7 +211,7 @@ public class MessagesActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put("seen", 1);
 
-        int rowsUpdated = getContentResolver().update(messageUri, values, null, null);
+        getContentResolver().update(messageUri, values, null, null);
 
 
     }

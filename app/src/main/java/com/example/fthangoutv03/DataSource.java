@@ -10,13 +10,11 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,21 +40,14 @@ public class DataSource {
         }
     }
 
-    private byte[] getBitmapAsByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        return outputStream.toByteArray();
-    }
-
-
     private String saveImageToStorage(Bitmap image, String phone) {
         ContextWrapper cw = new ContextWrapper(context);
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        File mypath = new File(directory, phone + ".jpg");
+        File myPath = new File(directory, phone + ".jpg");
 
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(mypath);
+            fos = new FileOutputStream(myPath);
             image.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +60,7 @@ public class DataSource {
                 e.printStackTrace();
             }
         }
-        return mypath.getAbsolutePath();
+        return myPath.getAbsolutePath();
     }
 
     public long addContact(String firstname, String lastname, String phone, Bitmap picture) {
@@ -118,11 +109,9 @@ public class DataSource {
 
 
     public List<Contact> getAllContacts() {
-        List<Contact> contacts = new ArrayList<Contact>();
-        Cursor cursor = null;
+        List<Contact> contacts = new ArrayList<>();
 
-        try {
-            cursor = database.query(DatabaseHelper.TABLE_CONTACTS, null, null, null, null, null, DatabaseHelper.COLUMN_CONTACT_FIRSTNAME);
+        try (Cursor cursor = database.query(DatabaseHelper.TABLE_CONTACTS, null, null, null, null, null, DatabaseHelper.COLUMN_CONTACT_FIRSTNAME)) {
 
             if (cursor != null && cursor.moveToFirst()) {
                 do {
@@ -132,17 +121,13 @@ public class DataSource {
             }
         } catch (Exception e) {
             Log.e("error", "Error querying contacts", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
         return contacts;
     }
 
-    public int deleteContact(String phoneNumber) {
+    public void deleteContact(String phoneNumber) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        return db.delete(DatabaseHelper.TABLE_CONTACTS,
+        db.delete(DatabaseHelper.TABLE_CONTACTS,
                 DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?",
                 new String[]{phoneNumber});
     }
@@ -150,28 +135,22 @@ public class DataSource {
     public Contact getContactByPhone(String phoneNumber) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Contact contact = null;
-        Cursor cursor = null;
 
-        try {
-            cursor = db.query(
-                    DatabaseHelper.TABLE_CONTACTS,
-                    new String[]{DatabaseHelper.COLUMN_CONTACT_FIRSTNAME, DatabaseHelper.COLUMN_CONTACT_LASTNAME, DatabaseHelper.COLUMN_CONTACT_PHONE, DatabaseHelper.COLUMN_CONTACT_PICTURE},
-                    DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?",
-                    new String[]{phoneNumber},
-                    null,
-                    null,
-                    null
-            );
+        try (Cursor cursor = db.query(
+                DatabaseHelper.TABLE_CONTACTS,
+                new String[]{DatabaseHelper.COLUMN_CONTACT_FIRSTNAME, DatabaseHelper.COLUMN_CONTACT_LASTNAME, DatabaseHelper.COLUMN_CONTACT_PHONE, DatabaseHelper.COLUMN_CONTACT_PICTURE},
+                DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?",
+                new String[]{phoneNumber},
+                null,
+                null,
+                null
+        )) {
 
             if (cursor != null && cursor.moveToFirst()) {
                 contact = cursorToContact(cursor);
             }
         } catch (Exception e) {
             Log.e("error", "Error querying contact by phone", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
 
         return contact;

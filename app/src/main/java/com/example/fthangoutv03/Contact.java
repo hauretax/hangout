@@ -1,7 +1,5 @@
 package com.example.fthangoutv03;
 
-import java.nio.Buffer;
-
 public class Contact {
     private String firstname;
     private String lastname;

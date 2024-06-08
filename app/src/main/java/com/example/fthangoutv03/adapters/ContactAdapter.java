@@ -78,49 +78,38 @@ public class ContactAdapter extends BaseAdapter {
             profileImageView.setImageResource(R.drawable.default_profile_picture);
         }
 
-        mainLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button_layout.getVisibility() == View.GONE) {
-                    button_layout.setVisibility(View.VISIBLE);
-                } else {
-                    button_layout.setVisibility(View.GONE);
-                }
+        mainLayout.setOnClickListener(v -> {
+            if (button_layout.getVisibility() == View.GONE) {
+                button_layout.setVisibility(View.VISIBLE);
+            } else {
+                button_layout.setVisibility(View.GONE);
             }
         });
 
-        deleteContactButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DataSource datasource = new DataSource(context);
-                datasource.open();
-                datasource.deleteContact(currentItem.getPhone());
-                datasource.close();
-                ((ContactsActivity) context).finish();
-            }
+        deleteContactButton.setOnClickListener(v -> {
+
+            DataSource datasource = new DataSource(context);
+            datasource.open();
+            datasource.deleteContact(currentItem.getPhone());
+            datasource.close();
+            ((ContactsActivity) context).finish();
         });
 
-        editContactButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ContactEditionActivity.class);
-                intent.putExtra("firstname", currentItem.getFirstname());
-                intent.putExtra("lastname", currentItem.getLastname());
-                intent.putExtra("picturePath", currentItem.getPicturePath());
-                intent.putExtra("phone", currentItem.getPhone());
-                context.startActivity(intent);
-                ((ContactsActivity) context).finish();
-            }
+        editContactButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ContactEditionActivity.class);
+            intent.putExtra("firstname", currentItem.getFirstname());
+            intent.putExtra("lastname", currentItem.getLastname());
+            intent.putExtra("picturePath", currentItem.getPicturePath());
+            intent.putExtra("phone", currentItem.getPhone());
+            context.startActivity(intent);
+            ((ContactsActivity) context).finish();
         });
 
-        openMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, MessagesActivity.class);
-                intent.putExtra("phone", currentItem.getPhone());
-                context.startActivity(intent);
-                ((ContactsActivity) context).finish();
-            }
+        openMessageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, MessagesActivity.class);
+            intent.putExtra("phone", currentItem.getPhone());
+            context.startActivity(intent);
+            ((ContactsActivity) context).finish();
         });
 
         return view;
