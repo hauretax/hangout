@@ -80,7 +80,7 @@ public class MessagesActivity extends AppCompatActivity {
         messageListView.post(new Runnable() {
             @Override
             public void run() {
-                messageListView.smoothScrollToPosition(adapter.getCount() - 1);
+                messageListView.setSelection(adapter.getCount() - 1);
             }
         });
 
@@ -117,6 +117,12 @@ public class MessagesActivity extends AppCompatActivity {
 
                     ContentResolver contentResolver = getContentResolver();
                     contentResolver.update(Uri.parse("content://sms/inbox"), values, selection, selectionArgs);
+                    messageListView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            messageListView.setSelection(adapter.getCount() - 1);
+                        }
+                    });
                 }
             }
         });
@@ -141,8 +147,12 @@ public class MessagesActivity extends AppCompatActivity {
 
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(inputEditText.getWindowToken(), 0);
-
-
+            messageListView.post(new Runnable() {
+                @Override
+                public void run() {
+                    messageListView.setSelection(adapter.getCount() - 1);
+                }
+            });
         }
     }
 
