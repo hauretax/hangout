@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         checkAndRequestSmsPermission();
 
 
-
         messages = retrieveMessages(getContentResolver());
         ListView messageListView = findViewById(R.id.list_item);
         adapter = new ContactMessageAdapter(this, messages);
@@ -97,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
         SmsReceiver.setSmsListener(new SmsReceiver.SmsListener() {
             @Override
             public void onSmsReceived(String sender, String message) {
-
-                Log.d("smsreceiver", "sender: " + sender + " message: "+message);
                 Iterator<MessageTicket> iterator = messages.iterator();
                 while (iterator.hasNext()) {
 
@@ -107,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                         iterator.remove();
                     }
                 }
-                messages.add(0,new MessageTicket(sender, message, new Date(), false, true));
+                messages.add(0, new MessageTicket(sender, message, new Date(), false, true));
 
                 adapter.setMessages(messages);
                 adapter.notifyDataSetChanged();
@@ -167,10 +164,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED &&
                     grantResults.length > 2 && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("Permissions", "SMS permissions granted");
-            } else {
-                Log.d("Permissions", "SMS permissions denied");
-            }
+             }
         }
     }
 
@@ -183,8 +177,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
-        Toast.makeText(this, item.getItemId(), Toast.LENGTH_SHORT).show();
 
         Intent intent;
 

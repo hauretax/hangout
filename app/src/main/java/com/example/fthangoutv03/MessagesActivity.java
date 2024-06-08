@@ -52,6 +52,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private String number;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +70,6 @@ public class MessagesActivity extends AppCompatActivity {
             toolbar = findViewById(R.id.toolbar);
             number = intent.getStringExtra("number");
             setSupportActionBar(toolbar);
-            Log.d("TAG", "number: " + number);
             toolbar.setTitle(number);
         }
 
@@ -77,6 +77,12 @@ public class MessagesActivity extends AppCompatActivity {
         messageListView = findViewById(R.id.list_messages);
         adapter = new MessagesAdapter(this, messages);
         messageListView.setAdapter(adapter);
+        messageListView.post(new Runnable() {
+            @Override
+            public void run() {
+                messageListView.smoothScrollToPosition(adapter.getCount() - 1);
+            }
+        });
 
         inputEditText = findViewById(R.id.inputEditText);
         sendButton = findViewById(R.id.sendButton);
@@ -111,12 +117,6 @@ public class MessagesActivity extends AppCompatActivity {
 
                     ContentResolver contentResolver = getContentResolver();
                     int rowsUpdated = contentResolver.update(Uri.parse("content://sms/inbox"), values, selection, selectionArgs);
-
-                    if (rowsUpdated > 0) {
-                        Log.d("SmsReceiver", "Message marked as read.");
-                    } else {
-                        Log.d("SmsReceiver", "Failed to mark message as read or message already read.");
-                    }
                 }
             }
         });
@@ -143,8 +143,7 @@ public class MessagesActivity extends AppCompatActivity {
             inputMethodManager.hideSoftInputFromWindow(inputEditText.getWindowToken(), 0);
 
 
-            Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
-        }
+      }
     }
     @Override
     protected void onResume() {
@@ -215,10 +214,6 @@ public class MessagesActivity extends AppCompatActivity {
 
         int rowsUpdated = getContentResolver().update(messageUri, values, null, null);
 
-        if (rowsUpdated > 0) {
-            Toast.makeText(this, "Message marked as seen", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Failed to mark message as seen", Toast.LENGTH_SHORT).show();
-        }
+
     }
 }

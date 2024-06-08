@@ -25,4 +25,5 @@
     <string name="contacte_edition">edition de contacte</string>
     <string name="search_contacts">chercher un contacte</string>
     <string name="yours_contacte">vos contactes</string>
+    <string name="delete_contact">supprimer</string>
 </resources>

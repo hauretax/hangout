@@ -25,4 +25,5 @@
     <string name="contacte_edition">contact edition</string>
     <string name="search_contacts">search contacts</string>
     <string name="yours_contacte">your contacts</string>
+    <string name="delete_contact">delete contact</string>
 </resources>

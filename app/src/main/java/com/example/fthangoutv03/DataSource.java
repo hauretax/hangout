@@ -140,6 +140,13 @@ public class DataSource {
         return contacts;
     }
 
+    public int deleteContact(String phoneNumber) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        return db.delete(DatabaseHelper.TABLE_CONTACTS,
+                DatabaseHelper.COLUMN_CONTACT_PHONE + " = ?",
+                new String[]{phoneNumber});
+    }
+
     public Contact getContactByPhone(String phoneNumber) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Contact contact = null;
@@ -157,11 +164,7 @@ public class DataSource {
             );
 
             if (cursor != null && cursor.moveToFirst()) {
-                Log.d("cursor", "shit happend");
-
                 contact = cursorToContact(cursor);
-
-                Log.d("cursor", contact.getFirstname());
             }
         } catch (Exception e) {
             Log.e("error", "Error querying contact by phone", e);

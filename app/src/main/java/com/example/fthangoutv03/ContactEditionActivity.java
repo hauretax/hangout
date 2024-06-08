@@ -53,7 +53,7 @@ public class ContactEditionActivity extends AppCompatActivity {
 
             ImageButton profileImageView = findViewById(R.id.buttonSelectPhoto);
             String imagePath = intent.getStringExtra("picturePath");
-            Log.d("IMAGE", imagePath);
+
             if (imagePath != null && !imagePath.isEmpty()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 profileImageView.setImageBitmap(bitmap);

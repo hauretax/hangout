@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.fthangoutv03.Contact;
 import com.example.fthangoutv03.ContactEditionActivity;
 import com.example.fthangoutv03.ContactsActivity;
+import com.example.fthangoutv03.DataSource;
 import com.example.fthangoutv03.MessagesActivity;
 import com.example.fthangoutv03.R;
 
@@ -59,6 +60,7 @@ public class ContactAdapter extends BaseAdapter {
         ImageView profileImageView = view.findViewById(R.id.profilePicture);
         TextView pseudoTextView = view.findViewById(R.id.pseudo);
         TextView phoneTextView = view.findViewById(R.id.phone_number);
+        Button deleteContactButton = view.findViewById(R.id.delete_contact);
         Button editContactButton = view.findViewById(R.id.edit_contact);
         Button openMessageButton = view.findViewById(R.id.open_message);
         LinearLayout mainLayout = view.findViewById(R.id.main_layout);
@@ -84,6 +86,17 @@ public class ContactAdapter extends BaseAdapter {
                 } else {
                     button_layout.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        deleteContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataSource datasource = new DataSource(context);
+                datasource.open();
+                datasource.deleteContact(currentItem.getPhone());
+                datasource.close();
+                ((ContactsActivity) context).finish();
             }
         });
 
