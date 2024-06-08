@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -74,10 +76,10 @@ public class DataSource {
         SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        if(picture != null) {
+        if (picture != null) {
             String picturePath = saveImageToStorage(picture, phone);
             values.put(DatabaseHelper.COLUMN_CONTACT_PICTURE, picturePath);
-        }else{
+        } else {
             values.put(DatabaseHelper.COLUMN_CONTACT_PICTURE, "");
         }
 
@@ -85,14 +87,21 @@ public class DataSource {
         values.put(DatabaseHelper.COLUMN_CONTACT_LASTNAME, lastname);
         values.put(DatabaseHelper.COLUMN_CONTACT_PHONE, phone);
 
-        return db.insert(DatabaseHelper.TABLE_CONTACTS, null, values);
+        long newRowId = -1;
+        try {
+            newRowId = db.insert(DatabaseHelper.TABLE_CONTACTS, null, values);
+        } catch (SQLiteConstraintException e) {
+            return -1;
+        }
+
+        return newRowId;
     }
 
     public int updateContact(String OldPhone, String firstname, String lastname, String phone, Bitmap picture) {
         SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        if(picture != null) {
+        if (picture != null) {
             String picturePath = saveImageToStorage(picture, phone);
             values.put(DatabaseHelper.COLUMN_CONTACT_PICTURE, picturePath);
         } else {
@@ -121,9 +130,9 @@ public class DataSource {
                     contacts.add(contact);
                 } while (cursor.moveToNext());
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             Log.e("error", "Error querying contacts", e);
-        }finally {
+        } finally {
             if (cursor != null) {
                 cursor.close();
             }

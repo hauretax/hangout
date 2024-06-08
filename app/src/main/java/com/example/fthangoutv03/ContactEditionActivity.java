@@ -10,11 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.InputStream;
 
@@ -23,7 +25,6 @@ public class ContactEditionActivity extends AppCompatActivity {
     private ImageButton imageButton;
     private Bitmap selectedImage = null;
     private DataSource datasource;
-    private boolean haveImage = false;
 
     private String oldPhone = "";
 
@@ -31,6 +32,9 @@ public class ContactEditionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_edition);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ToolbarColorUtil.applySavedColor(toolbar, this);
 
         Intent intent = getIntent();
 
@@ -76,13 +80,17 @@ public class ContactEditionActivity extends AppCompatActivity {
                 CustomInput firstName = findViewById(R.id.firstname_input);
                 CustomInput lastName = findViewById(R.id.lastname_input);
 
-
+                long result;
                 if (oldPhone.isEmpty()) {
-                    datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
+                    result = datasource.addContact(firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
                 } else {
-                    datasource.updateContact(oldPhone,firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
+                    result = datasource.updateContact(oldPhone, firstName.getInput(), lastName.getInput(), phone.getInput(), selectedImage);
                 }
-                finish();
+                if (result == -1) {
+                    Toast.makeText(v.getContext(), getString(R.string.already_use_number), Toast.LENGTH_LONG).show();
+                } else {
+                    finish();
+                }
             }
         });
 
@@ -111,7 +119,6 @@ public class ContactEditionActivity extends AppCompatActivity {
                 InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 selectedImage = BitmapFactory.decodeStream(imageStream);
                 imageButton.setImageBitmap(selectedImage);
-                haveImage = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }

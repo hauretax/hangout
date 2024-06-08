@@ -57,13 +57,16 @@ public class MessagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messages);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ToolbarColorUtil.applySavedColor(toolbar, this);
+
         inputEditText = findViewById(R.id.inputEditText);
         sendButton = findViewById(R.id.sendButton);
 
         number = "";
         Intent intent = getIntent();
         if (intent.hasExtra("number")) {
-            Toolbar toolbar = findViewById(R.id.toolbar);
+            toolbar = findViewById(R.id.toolbar);
             number = intent.getStringExtra("number");
             setSupportActionBar(toolbar);
             Log.d("TAG", "number: " + number);

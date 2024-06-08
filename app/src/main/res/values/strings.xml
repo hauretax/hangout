@@ -21,4 +21,8 @@
     <string name="add_new_contact">Ajouter un nouveaux contacte</string>
     <string name="extended_fab_edit_contact">bouton d\'edition d\'un nouveaux contacte</string>
     <string name="edit_contact">editer</string>
+    <string name="already_use_number">numeros déjas utiliser</string>
+    <string name="contacte_edition">edition de contacte</string>
+    <string name="search_contacts">chercher un contacte</string>
+    <string name="yours_contacte">vos contactes</string>
 </resources>

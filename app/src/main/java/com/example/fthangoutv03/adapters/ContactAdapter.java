@@ -112,4 +112,9 @@ public class ContactAdapter extends BaseAdapter {
 
         return view;
     }
+
+    public void updateList(List<Contact> contacts) {
+        this.contacts = contacts;
+        notifyDataSetChanged();
+    }
 }

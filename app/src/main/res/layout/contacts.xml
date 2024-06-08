@@ -3,7 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#171738"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+       >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yours_contacte"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/white"
+            android:id="@+id/toolbar_title"
+            android:layout_gravity="center"/>
+    </androidx.appcompat.widget.Toolbar>
+    <EditText
+        android:id="@+id/search_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search_contacts"
+        android:layout_margin="10dp"/>
     <Button
         android:id="@+id/add"
         android:layout_width="match_parent"
