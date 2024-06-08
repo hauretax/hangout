@@ -1,12 +1,18 @@
 package com.example.fthangoutv03;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,14 +23,34 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.settings);
+
+        ImageView flagFr = findViewById(R.id.flag_fr);
+        ImageView flagEn = findViewById(R.id.flag_en);
+
+        flagFr.setOnClickListener(v -> {
+            LocaleHelper.setLocale(SettingsActivity.this, "fr");
+            recreate();
+        });
+
+        flagEn.setOnClickListener(v -> {
+            LocaleHelper.setLocale(SettingsActivity.this, "en");
+            recreate();
+        });
 
         toolbar = findViewById(R.id.toolbar);
         ToolbarColorUtil.applySavedColor(toolbar, this);
@@ -38,12 +64,9 @@ public class SettingsActivity extends AppCompatActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = (TextView) view;
                 textView.setBackgroundColor(Color.parseColor(getItem(position)));
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String color = getItem(position);
-                        ToolbarColorUtil.changeToolbarColor(toolbar, color, SettingsActivity.this);
-                    }
+                textView.setOnClickListener(v -> {
+                    String color = getItem(position);
+                    ToolbarColorUtil.changeToolbarColor(toolbar, color, SettingsActivity.this);
                 });
                 return view;
             }

@@ -5,7 +5,7 @@ import static androidx.appcompat.app.AppCompatDelegate.create;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -56,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase));
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         ToolbarColorUtil.applySavedColor(toolbar, this);
 
         checkAndRequestSmsPermission();
+
 
 
         messages = retrieveMessages(getContentResolver());

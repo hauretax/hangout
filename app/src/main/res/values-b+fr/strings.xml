@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">ft hangout v0.3</string>
+    <string name="blank">default</string>
+    <string name="contact_picture">contact picture</string>
+    <string name="logo_desc">description de logo</string>
+    <string name="delete_conversation">supprimer la conversation</string>
+    <string name="create_contact">crée un contacte</string>
+    <string name="settings">paramétre</string>
+    <string name="send_message">Envoyer</string>
+    <string name="enter_message_her">Entrer votre message ici</string>
+    <string name="see_contact">voir les contactes</string>
+    <string name="rec">Enregistrer</string>
+    <string name="put_lastname">Entrez le prenom</string>
+    <string name="enter_firstname">Entrez le nom</string>
+    <string name="enter_phone">Entrez le numero</string>
+    <string name="phone">Numero</string>
+    <string name="firstname">Nom</string>
+    <string name="lastname">Prenom</string>
+    <string name="select_pictur">Sélectionner une photo</string>
+    <string name="select_picture">photo selectionner</string>
+    <string name="add_new_contact">Ajouter un nouveaux contacte</string>
+    <string name="extended_fab_edit_contact">bouton d\'edition d\'un nouveaux contacte</string>
+    <string name="edit_contact">editer</string>
+    <string name="already_use_number">numeros déjas utiliser</string>
+    <string name="contacte_edition">edition de contacte</string>
+    <string name="search_contacts">chercher un contacte</string>
+    <string name="yours_contacte">vos contactes</string>
+</resources>

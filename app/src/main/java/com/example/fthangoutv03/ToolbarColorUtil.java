@@ -11,7 +11,7 @@ public class ToolbarColorUtil {
 
     public static void applySavedColor(Toolbar toolbar, Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String savedColor = sharedPreferences.getString(PREF_COLOR, "#171738"); // Couleur par défaut
+        String savedColor = sharedPreferences.getString(PREF_COLOR, "#171738");
         toolbar.setBackgroundColor(Color.parseColor(savedColor));
     }
 
