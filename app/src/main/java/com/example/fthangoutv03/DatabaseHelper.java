@@ -8,14 +8,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "messaging.db";
     private static final int DATABASE_VERSION = 10;
 
-    //Contacts Table
     public static final String TABLE_CONTACTS = "contacts";
     public static final String COLUMN_CONTACT_FIRSTNAME = "firstname";
     public static final String COLUMN_CONTACT_LASTNAME = "secondname";
     public static final String COLUMN_CONTACT_PHONE = "phone";
     public static final String COLUMN_CONTACT_PICTURE = "picture";
 
-    //Messages Table
     public static final String TABLE_MESSAGES = "messages";
     public static final String COLUMN_MESSAGE_ID = "id";
     public static final String COLUMN_MESSAGE_CONTACT_PHONE = "contact_phone";

@@ -155,7 +155,6 @@ public class DataSource {
     }
 
 
-    //set contact
     @SuppressLint("Range")
     private Contact cursorToContact(Cursor cursor) {
         Contact contact = new Contact();

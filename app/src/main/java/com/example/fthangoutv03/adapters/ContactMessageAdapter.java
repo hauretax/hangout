@@ -93,7 +93,6 @@ public class ContactMessageAdapter extends BaseAdapter {
 
         SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yy");
-        // use to compare date day
         SimpleDateFormat dayFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 

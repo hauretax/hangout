@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.lifecycle:lifecycle-process:2.4.0")
     implementation("androidx.sqlite:sqlite:2.1.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
