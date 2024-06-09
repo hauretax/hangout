@@ -95,8 +95,6 @@ public class DataSource {
         if (picture != null) {
             String picturePath = saveImageToStorage(picture, phone);
             values.put(DatabaseHelper.COLUMN_CONTACT_PICTURE, picturePath);
-        } else {
-            values.put(DatabaseHelper.COLUMN_CONTACT_PICTURE, "");
         }
 
         values.put(DatabaseHelper.COLUMN_CONTACT_FIRSTNAME, firstname);

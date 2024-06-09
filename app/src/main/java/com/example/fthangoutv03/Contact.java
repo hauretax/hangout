@@ -32,6 +32,9 @@ public class Contact {
     }
 
     public String getName() {
+        if (firstname.isEmpty() && lastname.isEmpty()) {
+            return phone;
+        }
         return firstname + " " + lastname;
     }
 
@@ -40,6 +43,7 @@ public class Contact {
     }
 
     public String getPicturePath() {
+
         return picturePath;
     }
 

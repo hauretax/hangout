@@ -93,7 +93,6 @@ public class ContactEditionActivity extends AppCompatActivity {
             }
         });
 
-
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
         onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
             @Override

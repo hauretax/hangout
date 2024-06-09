@@ -1,6 +1,8 @@
 package com.example.fthangoutv03.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,19 +62,27 @@ public class ContactMessageAdapter extends BaseAdapter {
         dataSource.close();
         TextView pseudoTextView = view.findViewById(R.id.pseudo);
         TextView messageTextView = view.findViewById(R.id.message);
+        ImageView profileImageView = view.findViewById(R.id.profilePicture);
+        if (contact != null) {
 
+            String imagePath = contact.getPicturePath();
 
-        if (contact != null && !contact.getName().isEmpty()) {
+            if (imagePath != null && !imagePath.isEmpty()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                profileImageView.setImageBitmap(bitmap);
+            } else {
+                profileImageView.setImageResource(R.drawable.default_profile_picture);
+            }
             pseudoTextView.setText(contact.getName());
+
         } else {
             pseudoTextView.setText(currentItem.getNumber());
+            profileImageView.setImageResource(R.drawable.default_profile_picture);
         }
+
         messageTextView.setText(currentItem.getMessage());
 
         ((TextView) view.findViewById(R.id.lastSend)).setText(formatDate(currentItem.getReceivedDate()));
-
-        ((ImageView) view.findViewById(R.id.profilePicture)).setImageResource(R.drawable.default_profile_picture);
-
 
         return view;
     }

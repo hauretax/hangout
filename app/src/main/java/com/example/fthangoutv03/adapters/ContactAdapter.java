@@ -70,7 +70,6 @@ public class ContactAdapter extends BaseAdapter {
         phoneTextView.setText(currentItem.getPhone());
 
         String imagePath = currentItem.getPicturePath();
-        Log.d("IMAGE", imagePath);
         if (imagePath != null && !imagePath.isEmpty()) {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             profileImageView.setImageBitmap(bitmap);
