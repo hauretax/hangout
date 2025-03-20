@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
                 view.findViewById(R.id.phone_number);
                 Intent intent = new Intent(MainActivity.this, MessagesActivity.class);
-                intent.putExtra("number", message.getNumber());
+                intent.putExtra("phone", message.getNumber());
                 startActivity(intent);
             }
         });
