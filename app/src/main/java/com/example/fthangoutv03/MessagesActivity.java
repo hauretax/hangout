@@ -66,9 +66,9 @@ public class MessagesActivity extends AppCompatActivity {
 
         number = "";
         Intent intent = getIntent();
-        if (intent.hasExtra("number")) {
+        if (intent.hasExtra("phone")) {
             toolbar = findViewById(R.id.toolbar);
-            number = intent.getStringExtra("number");
+            number = intent.getStringExtra("phone");
             setSupportActionBar(toolbar);
             toolbar.setTitle(number);
         }
