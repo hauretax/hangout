@@ -30,7 +30,9 @@
     <string name="delete_contact">supprimer</string>
     <string name="phone_logo">logo de telephone</string>
     <string name="app_was_put_in_background_at">"L'application a ete mis en background a: "</string>
-
+    <string name="validate">Valider</string>
+    <string name="Change_language">Changer de langue</string>
+    <string name="Change_color">Changer de couleur</string>
 
 
 </resources>

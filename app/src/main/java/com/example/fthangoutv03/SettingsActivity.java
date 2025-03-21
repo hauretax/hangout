@@ -2,10 +2,13 @@ package com.example.fthangoutv03;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,7 +59,11 @@ public class SettingsActivity extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView textView = (TextView) view;
-                textView.setBackgroundColor(Color.parseColor(getItem(position)));
+                Drawable background = textView.getBackground();
+                if (background instanceof GradientDrawable) {
+                    ((GradientDrawable) background).setColor(Color.parseColor(getItem(position)));
+                }
+                textView.setText("");
                 textView.setOnClickListener(v -> {
                     String color = getItem(position);
                     ToolbarColorUtil.changeToolbarColor(toolbar, color, SettingsActivity.this);
@@ -74,12 +81,20 @@ public class SettingsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        Button goBackButton = findViewById(R.id.goBack);
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private ArrayList<String> getColors() {
         String[] colorsArray = {
-                "#171738", "#2E1760", "#3423A6", "#7180B9",
-                "#BD2D87", "#2F1000", "#621B00", "#945600"
+                "#88292F", "#A9FDAC", "#44CF6C", "#32A287",
+                "#DBB3B1", "#C89FA3", "#A67F8E", "#6C534E"
         };
         return new ArrayList<>(Arrays.asList(colorsArray));
     }

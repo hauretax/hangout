@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         checkAndRequestSmsPermission();
         checkAndRequestCallPermission();
 
-
         messages = retrieveMessages(getContentResolver());
         ListView messageListView = findViewById(R.id.list_item);
         adapter = new ContactMessageAdapter(this, messages);
