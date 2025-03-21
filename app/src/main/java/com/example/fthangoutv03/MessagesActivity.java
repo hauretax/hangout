@@ -184,7 +184,6 @@ public class MessagesActivity extends AppCompatActivity {
     private List<Message> retrieveMessages(ContentResolver contentResolver, String number) {
 
         final Cursor cursor = contentResolver.query(SMS_URI_ALL, null, "address = ?", new String[]{number}, "date ASC");
-        android.util.Log.i("COLUMNS", Arrays.toString(cursor.getColumnNames()));
         List<Message> messages = new ArrayList<>();
 
         if (cursor == null) {

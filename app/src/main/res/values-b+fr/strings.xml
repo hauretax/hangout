@@ -28,4 +28,9 @@
     <string name="search_contacts">chercher un contact</string>
     <string name="yours_contact">vos contacts</string>
     <string name="delete_contact">supprimer</string>
+    <string name="phone_logo">logo de telephone</string>
+    <string name="app_was_put_in_background_at">"L'application a ete mis en background a: "</string>
+
+
+
 </resources>

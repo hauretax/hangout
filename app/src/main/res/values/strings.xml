@@ -29,4 +29,5 @@
     <string name="french_flag">french flag</string>
     <string name="english_flag">english flag</string>
     <string name="app_was_put_in_background_at">"App was put in background at: "</string>
+    <string name="phone_logo">phone logo</string>
 </resources>

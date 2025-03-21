@@ -1,10 +1,12 @@
 package com.example.fthangoutv03.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.Manifest;
+
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 
 import com.example.fthangoutv03.Contact;
 import com.example.fthangoutv03.ContactEditionActivity;
@@ -64,6 +72,7 @@ public class ContactAdapter extends BaseAdapter {
         Button editContactButton = view.findViewById(R.id.edit_contact);
         Button openMessageButton = view.findViewById(R.id.open_message);
         LinearLayout mainLayout = view.findViewById(R.id.main_layout);
+        ImageView phonePicture = view.findViewById(R.id.phone_picture);
         LinearLayout button_layout = view.findViewById(R.id.button_layout);
 
         pseudoTextView.setText(currentItem.getFirstname() + " " + currentItem.getLastname());
@@ -82,6 +91,21 @@ public class ContactAdapter extends BaseAdapter {
                 button_layout.setVisibility(View.VISIBLE);
             } else {
                 button_layout.setVisibility(View.GONE);
+            }
+        });
+    //call when pressed
+        phonePicture.setOnClickListener(v -> {
+
+            String phoneNumber = currentItem.getPhone();
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+
+            Context context = v.getContext();
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                context.startActivity(callIntent);
+            } else {
+                // Demander la permission à l'utilisateur
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, 1);
             }
         });
 

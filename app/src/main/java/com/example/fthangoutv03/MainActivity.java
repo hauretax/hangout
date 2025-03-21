@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final Uri SMS_URI_ALL = Uri.parse("content://sms/");
 
     private static final int PERMISSION_REQUEST_READ_SMS = 123;
+    private static final int PERMISSION_REQUEST_CALL_PHONE = 100;
     private SmsReceiver smsReceiver;
     private ContactMessageAdapter adapter;
     private List<MessageTicket> messages;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         ToolbarColorUtil.applySavedColor(toolbar, this);
 
         checkAndRequestSmsPermission();
+        checkAndRequestCallPermission();
 
 
         messages = retrieveMessages(getContentResolver());
@@ -126,7 +128,14 @@ public class MainActivity extends AppCompatActivity {
         recreate();
     }
 
-
+    private void checkAndRequestCallPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.CALL_PHONE},
+                    PERMISSION_REQUEST_CALL_PHONE);
+        }
+    }
     private void checkAndRequestSmsPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS)
                 != PackageManager.PERMISSION_GRANTED ||
